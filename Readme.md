@@ -55,8 +55,8 @@ Code implementation
 ```
 SOME SAMPLE IMAGES ARE GIVEN FOR REFERENCE:
 ```
-![Alt text](image.png)
-![Alt text](image-1.png)
+![Alt text](demo_image_1.png)
+![Alt text](demo_image_2.png)
 
 
 ## Team Members
