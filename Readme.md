@@ -54,9 +54,10 @@ Code implementation
 
 ```
 SOME SAMPLE IMAGES ARE GIVEN FOR REFERENCE:
+```
 ![Alt text](image.png)
 ![Alt text](image-1.png)
-```
+
 
 ## Team Members
 - Saurabh Kumar 
