@@ -13,6 +13,30 @@ def process_image_and_show(image_path, cutoff_frequency, sigma_x, sigma_y, order
     fft_result_shifted = np.fft.fftshift(fft_result)
     magnitude_spectrum = np.log(np.abs(fft_result_shifted) + 1).real
 
+    # Find the radius of the low values - max Cutoff Frequency
+    max_magnitude = np.max(magnitude_spectrum)
+    threshold = 0.5 * max_magnitude
+    low_values_indices = np.where(magnitude_spectrum < threshold)
+    radius_low_values = np.sqrt((low_values_indices[0] - fft_result_shifted.shape[0] // 2)**2 +
+                            (low_values_indices[1] - fft_result_shifted.shape[1] // 2)**2)
+    max_radius_low_values = np.max(radius_low_values)
+    cut_off_frequency_max = max_radius_low_values
+
+    if cutoff_frequency > cut_off_frequency_max:
+        cutoff_frequency = cut_off_frequency_max
+        label_cutoff_warning.config(text="Warning: Cutoff frequency is beyond the maximum allowable value.", fg="red")
+        return None
+
+    else:
+        label_cutoff_warning.config(text="Max Cutoff Frequency: " + str(cut_off_frequency_max), fg="black")  # Clear the warning message
+    
+    if sigma_x<5 or sigma_y<5:
+        label_gaussian_warning.config(text="Warning: Sigma X and Sigma Y should be greater than 5.", fg="red")
+        return None
+    else:
+        label_gaussian_warning.config(text="Min Sigma X and Sigma Y: 5 " , fg="black")  # Clear the warning message
+     
+    
     # Gaussian Smoothing
     kernel_size_l = fft_result_shifted.shape[0]
     kernel_size_b = fft_result_shifted.shape[1]
@@ -35,6 +59,7 @@ def process_image_and_show(image_path, cutoff_frequency, sigma_x, sigma_y, order
     # Inverse Fourier Transform
     lowpass_image = np.fft.ifft2(np.fft.ifftshift(lowpass_result)).real
     highpass_image = np.fft.ifft2(np.fft.ifftshift(highpass_result)).real
+
 
     # Display images
     plt.figure(figsize=(16, 12))
@@ -78,7 +103,6 @@ def process_image():
     sigma_x = float(entry_sigma_x.get())
     sigma_y = float(entry_sigma_y.get())
     order = int(entry_order.get())
-
     process_image_and_show(image_path, cutoff_frequency, sigma_x, sigma_y, order)
 
 # Butterworth Filter Function
@@ -97,16 +121,33 @@ def butterworth_filter(shape, cutoff, order=1):
     y = np.fft.fftshift(v)
     xx, yy = np.meshgrid(x, y)
 
-    # Calculate the distance from the center
     radius = np.sqrt(xx ** 2 + yy ** 2)
 
-    # Constructing the Butterworth filter
+   
     butterworth = 1 / (1 + (radius / cutoff) ** (2 * order))
     return butterworth
 
 def gaussian_kernel(l, b, sigma_x, sigma_y):
     kernel = np.fromfunction(lambda x, y: (1/(2*np.pi*sigma_x*sigma_y)) * np.exp(-((x-(l-1)/2)**2/(2*sigma_x**2) + (y-(b-1)/2)**2/(2*sigma_y**2))), (l, b))
     return kernel / np.sum(kernel)
+
+
+
+# def process_image():
+#     image_path = entry_path.get()
+#     cutoff_frequency = float(entry_cutoff.get())
+#     sigma_x = float(entry_sigma_x.get())
+#     sigma_y = float(entry_sigma_y.get())
+#     order = int(entry_order.get())
+
+#     # Check if cutoff frequency is beyond the maximum allowable value
+#     if cutoff_frequency > cut_off_frequency_max:
+#         cutoff_frequency = cut_off_frequency_max
+#         label_cutoff_warning.config(text="Warning: Cutoff frequency is beyond the maximum allowable value.", fg="red")
+
+#     else:
+#         label_cutoff_warning.config(text="")  # Clear the warning message
+
 
 
 
@@ -128,23 +169,31 @@ label_cutoff.grid(row=1, column=0)
 entry_cutoff = tk.Entry(root)
 entry_cutoff.grid(row=1, column=1)
 
+label_cutoff_warning = tk.Label(root, text="", fg="red")  # You can adjust the color as needed
+label_cutoff_warning.grid(row=2, column=1 )
+
 label_sigma_x = tk.Label(root, text="Sigma X:")
-label_sigma_x.grid(row=2, column=0)
+label_sigma_x.grid(row=3, column=0)
 entry_sigma_x = tk.Entry(root)
-entry_sigma_x.grid(row=2, column=1)
+entry_sigma_x.grid(row=3, column=1)
 
 label_sigma_y = tk.Label(root, text="Sigma Y:")
-label_sigma_y.grid(row=3, column=0)
+label_sigma_y.grid(row=4, column=0)
 entry_sigma_y = tk.Entry(root)
-entry_sigma_y.grid(row=3, column=1)
+entry_sigma_y.grid(row=4, column=1)
+
+
+label_gaussian_warning = tk.Label(root, text="", fg="red")  # You can adjust the color as needed
+label_gaussian_warning.grid(row=5, column=1 )
+
 
 label_order = tk.Label(root, text="Order:")
-label_order.grid(row=4, column=0)
+label_order.grid(row=6, column=0)
 entry_order = tk.Entry(root)
-entry_order.grid(row=4, column=1)
+entry_order.grid(row=6, column=1)
 
 # Process Button
 button_process = tk.Button(root, text="Process Image", command=process_image)
-button_process.grid(row=5, column=1)
+button_process.grid(row=7, column=1)
 
 root.mainloop()
