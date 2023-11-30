@@ -52,8 +52,14 @@ Code implementation
         cut_off_frequency_max = max_radius_low_values
 ```
 
+```
+SOME SAMPLE IMAGES ARE GIVEN FOR REFERENCE:
+![Alt text](image.png)
+![Alt text](image-1.png)
+```
+
 ## Team Members
-- Saurabh Kumar (Roll No. : 22B3905)
-- Cherish Jain (Roll No. : 22B3927)
+- Saurabh Kumar 
+- Cherish Jain 
 - Yask Kakade
 - Samarth Sirsat

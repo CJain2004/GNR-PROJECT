@@ -30,11 +30,11 @@ def process_image_and_show(image_path, cutoff_frequency, sigma_x, sigma_y, order
     else:
         label_cutoff_warning.config(text="Max Cutoff Frequency: " + str(cut_off_frequency_max), fg="black")  # Clear the warning message
     
-    if sigma_x<5 or sigma_y<5:
-        label_gaussian_warning.config(text="Warning: Sigma X and Sigma Y should be greater than 5.", fg="red")
+    if sigma_x<2 or sigma_y<2:
+        label_gaussian_warning.config(text="Warning: Sigma X and Sigma Y should be greater than 2.", fg="red")
         return None
     else:
-        label_gaussian_warning.config(text="Min Sigma X and Sigma Y: 5 " , fg="black")  # Clear the warning message
+        label_gaussian_warning.config(text="Min Sigma X and Sigma Y: 2 " , fg="black")  # Clear the warning message
      
     
     # Gaussian Smoothing
@@ -75,19 +75,19 @@ def process_image_and_show(image_path, cutoff_frequency, sigma_x, sigma_y, order
 
 
     plt.subplot(2, 4, 4), plt.imshow(image_restored, cmap='gray')
-    plt.title('Gaussian Smoothing'), plt.xticks([]), plt.yticks([])
+    plt.title('Gaussian Smoothened Image'), plt.xticks([]), plt.yticks([])
 
     plt.subplot(2, 4, 5), plt.imshow(np.log(np.abs(lowpass_result) + 1).real, cmap='gray')
-    plt.title('Lowpass Image'), plt.xticks([]), plt.yticks([])
+    plt.title('LowPass Butterworth Filter BELOW'), plt.xticks([]), plt.yticks([])
 
     plt.subplot(2, 4, 6), plt.imshow(np.log(np.abs(highpass_result) + 1).real, cmap='gray')
-    plt.title('Highpass Image'), plt.xticks([]), plt.yticks([])
+    plt.title('Highpass Butterworth Filter BELOW'), plt.xticks([]), plt.yticks([])
 
     plt.subplot(2, 4, 7), plt.imshow(lowpass_image, cmap='gray')
-    plt.title('Lowpass Time Image'), plt.xticks([]), plt.yticks([])
+    plt.title('Lowpass Butterworth Image BELOW'), plt.xticks([]), plt.yticks([])
 
     plt.subplot(2, 4, 8), plt.imshow(highpass_image, cmap='gray')
-    plt.title('Highpass Time Image'), plt.xticks([]), plt.yticks([]) 
+    plt.title('Highpass Butterworth Image BELOW'), plt.xticks([]), plt.yticks([]) 
 
     plt.tight_layout()
     plt.show()
